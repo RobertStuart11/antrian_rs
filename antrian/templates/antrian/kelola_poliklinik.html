@@ -1,0 +1,36 @@
+{% extends 'antrian/base.html' %}
+{% block title %}Kelola Poliklinik{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="fw-bold mb-0" style="color:#0F6E56"><i class="bi bi-hospital"></i> Kelola Poliklinik</h5>
+  <a href="{% url 'tambah_poliklinik' %}" class="btn btn-rs btn-sm"><i class="bi bi-plus-circle"></i> Tambah Poli</a>
+</div>
+<div class="card">
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0" style="font-size:14px">
+      <thead style="background:#f8f9fa">
+        <tr>
+          <th class="ps-3">Kode</th><th>Nama Poliklinik</th><th>Ruangan</th><th>Dokter</th><th>Status</th><th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for poli in poli_list %}
+        <tr>
+          <td class="ps-3"><strong>{{ poli.kode }}</strong></td>
+          <td>{{ poli.nama }}</td>
+          <td>{{ poli.ruangan }}</td>
+          <td>{{ poli.dokter|default:"–" }}</td>
+          <td>{% if poli.aktif %}<span class="badge badge-dilayani">Aktif</span>{% else %}<span class="badge badge-batal">Nonaktif</span>{% endif %}</td>
+          <td>
+            <a href="{% url 'edit_poliklinik' poli.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+            <a href="{% url 'hapus_poliklinik' poli.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" class="text-center py-4 text-muted">Belum ada poliklinik.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

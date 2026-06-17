@@ -1,0 +1,68 @@
+{% extends 'antrian/base.html' %}
+{% block title %}Laporan{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="fw-bold mb-0" style="color:#0F6E56"><i class="bi bi-bar-chart"></i> Laporan Antrian</h5>
+</div>
+
+<div class="card mb-3">
+  <div class="card-body py-2">
+    <form method="get" class="row g-2 align-items-end">
+      <div class="col-md-3">
+        <label class="form-label mb-1" style="font-size:12px">Tanggal Laporan</label>
+        <input type="date" name="tanggal" value="{{ tanggal }}" class="form-control form-control-sm">
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-rs btn-sm w-100"><i class="bi bi-search"></i> Tampilkan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3"><div class="stat-card hijau"><div class="angka">{{ total_pasien }}</div><div class="label">Total Pasien</div></div></div>
+  <div class="col-6 col-md-3"><div class="stat-card abu"><div class="angka">{{ total_selesai }}</div><div class="label">Selesai Dilayani</div></div></div>
+  <div class="col-6 col-md-3"><div class="stat-card kuning"><div class="angka">{{ total_menunggu }}</div><div class="label">Masih Menunggu</div></div></div>
+  <div class="col-6 col-md-3"><div class="stat-card" style="background:#A32D2D"><div class="angka">{{ total_batal }}</div><div class="label">Batal / Tidak Hadir</div></div></div>
+</div>
+
+<div class="card">
+  <div class="card-header-rs"><i class="bi bi-table"></i> Rekap per Poliklinik – {{ tanggal }}</div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0" style="font-size:14px">
+        <thead style="background:#f8f9fa">
+          <tr>
+            <th class="ps-3">Kode</th>
+            <th>Poliklinik</th>
+            <th class="text-center">Total</th>
+            <th class="text-center">Selesai</th>
+            <th class="text-center">Menunggu</th>
+            <th class="text-center">Batal</th>
+            <th class="text-center">% Selesai</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in per_poli %}
+          <tr>
+            <td class="ps-3"><strong>{{ row.poliklinik__kode }}</strong></td>
+            <td>{{ row.poliklinik__nama }}</td>
+            <td class="text-center">{{ row.total }}</td>
+            <td class="text-center text-success fw-bold">{{ row.selesai }}</td>
+            <td class="text-center text-warning fw-bold">{{ row.menunggu }}</td>
+            <td class="text-center text-danger">{{ row.batal }}</td>
+            <td class="text-center">
+              {% if row.total > 0 %}
+              {% widthratio row.selesai row.total 100 %}%
+              {% else %}0%{% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" class="text-center text-muted py-4">Tidak ada data untuk tanggal ini.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

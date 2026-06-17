@@ -1,0 +1,100 @@
+{% extends 'antrian/base.html' %}
+{% block title %}Daftar Antrian{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0 fw-bold" style="color:#0F6E56"><i class="bi bi-list-ol"></i> Daftar Antrian</h5>
+  <a href="{% url 'ambil_antrian' %}" class="btn btn-rs btn-sm"><i class="bi bi-plus-circle"></i> Tambah Antrian</a>
+</div>
+
+<!-- FILTER -->
+<div class="card mb-3">
+  <div class="card-body py-2">
+    <form method="get" class="row g-2 align-items-end">
+      <div class="col-md-3">
+        <label class="form-label mb-1" style="font-size:12px">Tanggal</label>
+        <input type="date" name="tanggal" value="{{ tanggal }}" class="form-control form-control-sm">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label mb-1" style="font-size:12px">Poliklinik</label>
+        <select name="poli" class="form-select form-select-sm">
+          <option value="">Semua Poli</option>
+          {% for poli in poliklinik_list %}
+          <option value="{{ poli.pk }}" {% if poli_id == poli.pk|stringformat:'s' %}selected{% endif %}>{{ poli.nama }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label mb-1" style="font-size:12px">Status</label>
+        <select name="status" class="form-select form-select-sm">
+          <option value="">Semua Status</option>
+          {% for val, label in status_choices %}
+          <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <button type="submit" class="btn btn-rs btn-sm w-100"><i class="bi bi-search"></i> Filter</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- TABEL -->
+<div class="card">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0" style="font-size:13px">
+        <thead style="background:#f8f9fa">
+          <tr>
+            <th class="ps-3">No. Antrian</th>
+            <th>Nama Pasien</th>
+            <th>Poliklinik</th>
+            <th>Jenis</th>
+            <th>Waktu Daftar</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in antrian_list %}
+          <tr>
+            <td class="ps-3"><span class="nomor-antrian text-success">{{ a.kode_antrian }}</span></td>
+            <td>
+              <div class="fw-500">{{ a.nama_pasien }}</div>
+              {% if a.keluhan %}<div class="text-muted" style="font-size:11px">{{ a.keluhan|truncatechars:40 }}</div>{% endif %}
+            </td>
+            <td>
+              <div>{{ a.poliklinik.nama }}</div>
+              <div class="text-muted" style="font-size:11px">{{ a.poliklinik.ruangan }}</div>
+            </td>
+            <td><span class="badge bg-secondary">{{ a.get_jenis_pasien_display }}</span></td>
+            <td>{{ a.waktu_daftar|time:"H:i" }}</td>
+            <td>
+              <span class="badge badge-{{ a.status }} px-2 py-1">{{ a.get_status_display }}</span>
+            </td>
+            <td>
+              {% if a.status == 'menunggu' %}
+              <a href="{% url 'panggil_antrian' a.pk %}" class="btn btn-sm btn-rs" title="Panggil"><i class="bi bi-megaphone"></i></a>
+              {% elif a.status == 'dipanggil' or a.status == 'dilayani' %}
+              <a href="{% url 'selesai_antrian' a.pk %}" class="btn btn-sm btn-success" title="Selesai"><i class="bi bi-check-lg"></i></a>
+              {% endif %}
+              <a href="{% url 'detail_antrian' a.pk %}" class="btn btn-sm btn-outline-secondary" title="Detail"><i class="bi bi-eye"></i></a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="text-center text-muted py-5">
+              <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+              Tidak ada data antrian untuk filter yang dipilih.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="text-muted mt-2" style="font-size:12px">Total: {{ antrian_list|length }} data antrian</div>
+{% endblock %}

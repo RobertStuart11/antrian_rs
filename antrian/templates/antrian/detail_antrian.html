@@ -1,0 +1,48 @@
+{% extends 'antrian/base.html' %}
+{% block title %}Detail Antrian {{ antrian.kode_antrian }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <a href="{% url 'daftar_antrian' %}" class="btn btn-sm btn-outline-secondary mb-3"><i class="bi bi-arrow-left"></i> Kembali</a>
+    <h5 class="fw-bold mb-3" style="color:#0F6E56"><i class="bi bi-file-text"></i> Detail Antrian</h5>
+
+    <div class="card mb-3">
+      <div class="card-header-rs d-flex justify-content-between">
+        <span>Nomor: <strong>{{ antrian.kode_antrian }}</strong></span>
+        <span class="badge badge-{{ antrian.status }} px-2 py-1">{{ antrian.get_status_display }}</span>
+      </div>
+      <div class="card-body">
+        <div class="row g-3" style="font-size:14px">
+          <div class="col-6"><span class="text-muted d-block" style="font-size:12px">Nama Pasien</span><strong>{{ antrian.nama_pasien }}</strong></div>
+          <div class="col-6"><span class="text-muted d-block" style="font-size:12px">NIK</span>{{ antrian.nik|default:"–" }}</div>
+          <div class="col-6"><span class="text-muted d-block" style="font-size:12px">Poliklinik</span>{{ antrian.poliklinik.nama }}</div>
+          <div class="col-6"><span class="text-muted d-block" style="font-size:12px">Jenis Pasien</span>{{ antrian.get_jenis_pasien_display }}</div>
+          <div class="col-6"><span class="text-muted d-block" style="font-size:12px">Tanggal</span>{{ antrian.tanggal|date:"d M Y" }}</div>
+          <div class="col-6"><span class="text-muted d-block" style="font-size:12px">Waktu Daftar</span>{{ antrian.waktu_daftar|time:"H:i" }}</div>
+          {% if antrian.keluhan %}
+          <div class="col-12"><span class="text-muted d-block" style="font-size:12px">Keluhan</span>{{ antrian.keluhan }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header-rs"><i class="bi bi-pencil-square"></i> Update Status</div>
+      <div class="card-body">
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label" style="font-size:13px">Status Antrian</label>
+            {{ form.status }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label" style="font-size:13px">Catatan Dokter</label>
+            {{ form.catatan_dokter }}
+          </div>
+          <button type="submit" class="btn btn-rs w-100"><i class="bi bi-save"></i> Simpan Perubahan</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

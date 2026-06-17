@@ -1,0 +1,127 @@
+{% extends 'antrian/base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5 class="mb-0 fw-bold" style="color:#0F6E56"><i class="bi bi-speedometer2"></i> Dashboard Antrian</h5>
+  <span class="text-muted" style="font-size:13px"><i class="bi bi-calendar3"></i> {{ tanggal|date:"l, d F Y" }}</span>
+</div>
+
+<!-- STATISTIK -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="stat-card hijau h-100">
+      <div class="angka">{{ total_pasien }}</div>
+      <div class="label"><i class="bi bi-people-fill"></i> Total Pasien Hari Ini</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card kuning h-100">
+      <div class="angka">{{ menunggu }}</div>
+      <div class="label"><i class="bi bi-hourglass-split"></i> Menunggu</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card biru h-100">
+      <div class="angka">{{ dilayani }}</div>
+      <div class="label"><i class="bi bi-person-check-fill"></i> Sedang Dilayani</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card abu h-100">
+      <div class="angka">{{ selesai }}</div>
+      <div class="label"><i class="bi bi-check-circle-fill"></i> Selesai</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <!-- ANTRIAN AKTIF -->
+  <div class="col-lg-7">
+    <div class="card h-100">
+      <div class="card-header-rs d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-list-task"></i> Antrian Aktif Hari Ini</span>
+        <a href="{% url 'daftar_antrian' %}" class="btn btn-sm btn-outline-light">Lihat Semua</a>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0" style="font-size:13px">
+            <thead style="background:#f8f9fa">
+              <tr>
+                <th class="ps-3">No. Antrian</th>
+                <th>Pasien</th>
+                <th>Poliklinik</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for a in antrian_aktif %}
+              <tr>
+                <td class="ps-3"><span class="nomor-antrian text-success">{{ a.kode_antrian }}</span></td>
+                <td>
+                  <div class="fw-500">{{ a.nama_pasien }}</div>
+                  <div class="text-muted" style="font-size:11px">{{ a.get_jenis_pasien_display }}</div>
+                </td>
+                <td>{{ a.poliklinik.nama }}</td>
+                <td>
+                  <span class="badge badge-{{ a.status }} px-2 py-1">
+                    {{ a.get_status_display }}
+                  </span>
+                </td>
+                <td>
+                  {% if a.status == 'menunggu' %}
+                  <a href="{% url 'panggil_antrian' a.pk %}" class="btn btn-sm btn-rs"><i class="bi bi-megaphone"></i></a>
+                  {% elif a.status == 'dipanggil' or a.status == 'dilayani' %}
+                  <a href="{% url 'selesai_antrian' a.pk %}" class="btn btn-sm btn-success"><i class="bi bi-check-lg"></i></a>
+                  {% endif %}
+                  <a href="{% url 'detail_antrian' a.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i></a>
+                </td>
+              </tr>
+              {% empty %}
+              <tr><td colspan="5" class="text-center text-muted py-4">Belum ada antrian hari ini</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL KANAN -->
+  <div class="col-lg-5">
+    <!-- DISPLAY MINI -->
+    <div class="card mb-3" style="background:#04342C;color:#fff;border-radius:12px">
+      <div class="card-body">
+        <div style="font-size:11px;color:#5DCAA5;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">
+          <i class="bi bi-display"></i> Display Antrian
+        </div>
+        {% for poli in poliklinik_list %}
+        {% with sedang=poli.antrian_set.all %}
+        <div class="d-flex justify-content-between align-items-center mb-2 pb-2" style="border-bottom:0.5px solid #085041">
+          <div>
+            <div style="font-size:10px;color:#9FE1CB">{{ poli.nama }} – {{ poli.ruangan }}</div>
+            <div style="font-size:22px;font-weight:700;font-family:'Courier New';letter-spacing:2px">
+              {% for a in poli.antrian_set.all %}{% if a.status == 'dilayani' or a.status == 'dipanggil' %}{{ a.kode_antrian }}{% endif %}{% empty %}–{% endfor %}
+            </div>
+          </div>
+          <a href="{% url 'display_board' %}" target="_blank" class="btn btn-sm" style="background:#085041;color:#5DCAA5;font-size:11px">Layar Penuh</a>
+        </div>
+        {% endwith %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- AKSI CEPAT -->
+    <div class="card">
+      <div class="card-header-rs"><i class="bi bi-lightning-charge"></i> Aksi Cepat</div>
+      <div class="card-body d-grid gap-2">
+        <a href="{% url 'ambil_antrian' %}" class="btn btn-rs"><i class="bi bi-ticket-perforated"></i> Daftarkan Pasien Baru</a>
+        <a href="{% url 'daftar_antrian' %}" class="btn btn-outline-secondary"><i class="bi bi-list-ol"></i> Lihat Semua Antrian</a>
+        <a href="{% url 'laporan' %}" class="btn btn-outline-secondary"><i class="bi bi-bar-chart"></i> Laporan Hari Ini</a>
+        <a href="{% url 'display_board' %}" target="_blank" class="btn btn-outline-secondary"><i class="bi bi-display"></i> Buka Display Board</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
