@@ -1,23 +1,23 @@
-# 🏥 Sistem Antrian Poliklinik Rumah Sakit
+#  Sistem Antrian Poliklinik Rumah Sakit
 **Framework:** Django (Python) | **Database:** SQLite | **UI:** Bootstrap 5
 
 ---
 
-## 📋 Fitur Aplikasi
+##  Fitur Aplikasi
 
 | Fitur | Keterangan |
 |-------|-----------|
-| 🎫 Ambil Nomor Antrian | Pasien bisa daftar tanpa login |
-| 📋 Daftar Antrian | Lihat & kelola semua antrian harian |
-| 📺 Display Board | Layar antrian real-time (cocok di TV) |
-| 🏥 Kelola Poliklinik | CRUD poli beserta dokter & ruangan |
-| 📊 Laporan | Rekap antrian per poli per hari |
-| 🔐 Login Petugas | Sistem autentikasi bawaan Django |
-| 🔄 Auto-refresh | Display board update otomatis 15 detik |
+|  Ambil Nomor Antrian | Pasien bisa daftar tanpa login |
+|  Daftar Antrian | Lihat & kelola semua antrian harian |
+|  Display Board | Layar antrian real-time (cocok di TV) |
+|  Kelola Poliklinik | CRUD poli beserta dokter & ruangan |
+|  Laporan | Rekap antrian per poli per hari |
+|  Login Petugas | Sistem autentikasi bawaan Django |
+|  Auto-refresh | Display board update otomatis 15 detik |
 
 ---
 
-## ⚡ Cara Instalasi & Menjalankan
+##  Cara Instalasi & Menjalankan
 
 ### 1. Persiapan (jika belum ada)
 ```bash
@@ -52,7 +52,7 @@ http://127.0.0.1:8000/
 
 ---
 
-## 🔑 Akun Login
+##  Akun Login
 
 | Role | Username | Password |
 |------|----------|----------|
@@ -63,7 +63,7 @@ http://127.0.0.1:8000/
 
 ---
 
-## 🗂️ Struktur Proyek
+##  Struktur Proyek
 
 ```
 antrian_rs/
@@ -94,7 +94,7 @@ antrian_rs/
 
 ---
 
-## 🗄️ Diagram Database
+##  Diagram Database
 
 ```
 Poliklinik          Antrian              Pasien
@@ -117,7 +117,7 @@ aktif           │   nik                 no_hp
 
 ---
 
-## 🌐 URL & Halaman
+##  URL & Halaman
 
 | URL | Halaman | Login? |
 |-----|---------|--------|
